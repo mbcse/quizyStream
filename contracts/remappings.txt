@@ -1,0 +1,2 @@
+forge-std/=lib/forge-std/src/
+superfluid-contracts/=lib/superfluid-protocol-monorepo/packages/ethereum-contracts/
