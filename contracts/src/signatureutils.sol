@@ -35,12 +35,13 @@ library SignatureVerification {
         return keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", _messageHash));
     }
 
-
-    function getMessageHash(string memory answer, uint timestamp,uint256 quiz_id, uint question_number, address player)
-        public
-        pure
-        returns (bytes32)
-    {
-        return keccak256(abi.encodePacked(answer,timestamp, quiz_id, question_number, player));
+    function getMessageHash(
+        string memory answer,
+        uint256 timestamp,
+        uint256 quiz_id,
+        uint256 question_number,
+        address player
+    ) public pure returns (bytes32) {
+        return keccak256(abi.encodePacked(answer, timestamp, quiz_id, question_number, player));
     }
 }

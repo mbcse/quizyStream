@@ -6,27 +6,20 @@ import "superfluid-contracts/contracts/apps/SuperTokenV1Library.sol";
 import {ISuperToken} from "superfluid-contracts/contracts/interfaces/superfluid/ISuperToken.sol";
 import {ISuperfluidPool} from "superfluid-contracts/contracts/interfaces/agreements/gdav1/ISuperfluidPool.sol";
 
-
 contract QuizyStream {
-    uint256 public idcounter;
-
     using SuperTokenV1Library for ISuperToken;
+
     ISuperToken public superToken;
 
-    PoolConfig private poolConfig = PoolConfig({
-        transferabilityForUnitsOwner: true,
-        distributionFromAnyAddress: true
-    });
-
+    PoolConfig private poolConfig = PoolConfig({transferabilityForUnitsOwner: true, distributionFromAnyAddress: true});
 
     constructor(ISuperToken _superToken) {
-
         superToken = _superToken;
-
     }
 
     struct Answer {
         string answer;
+        string question;
         uint256 timestamp;
         uint256 quiz_id;
         uint256 question_number;
@@ -51,7 +44,7 @@ contract QuizyStream {
         /// players
         address[] players;
         bytes32[] questionanswerhash;
-        ISuperfluidPool  pool;
+        ISuperfluidPool pool;
     }
 
     function start_new_quiz(
@@ -64,7 +57,7 @@ contract QuizyStream {
         address[] memory players,
         bytes32[] memory hashes
     ) public {
-
+        require(id_to_quizinstance[id].start_time == 0, "same id ");
         ISuperfluidPool pool = superToken.createPool((admin), poolConfig);
         QuizInstance memory quizinstance = QuizInstance({
             admin: admin,
@@ -77,41 +70,84 @@ contract QuizyStream {
             pool: pool
         });
         id_to_quizinstance[id] = quizinstance;
-
+        distributeFlow(pool, flowRate);
     }
 
-    function aggregate_answers(string memory quiz_id, uint256 question_number, Answer[] memory answer)
-        external
-        onlyAdmin(quiz_id)
-    {
+    function distributeFlow(ISuperfluidPool pool, int96 flowRate) public {
+        superToken.distributeFlow(address(this), pool, flowRate);
+    }
 
+    function aggregate_answers(
+        string memory quiz_id,
+        uint256 question_number,
+        Answer[] memory answer,
+        uint256 questionsalt,
+        string memory correct_question,
+        string memory correct_answer
+    ) external onlyAdmin(quiz_id) {
         QuizInstance memory quizinstance = id_to_quizinstance[quiz_id];
         require(question_number <= quizinstance.questions_num);
         for (uint256 i = 0; i < answer.length; i++) {
-            // todo check if player signature is really a player in the quiz id 
+            // todo check if player signature is really a player in the quiz id
+
+            require(
+                quizinstance.questionanswerhash == keccak256(abi.encode(correct_question, correct_answer, questionsalt))
+            );
             Answer memory answer_instance = answer[i];
-            bytes32 messageHash = SignatureVerification.getMessageHash(answer_instance.answer, answer_instance.timestamp, answer_instance.quiz_id,answer_instance.question_number, answer_instance.player);
+            bytes32 messageHash = SignatureVerification.getMessageHash(
+                answer_instance.answer,
+                answer_instance.timestamp,
+                answer_instance.quiz_id,
+                answer_instance.question_number,
+                answer_instance.player
+            );
             bytes32 ethSignedMessageHash = SignatureVerification.getEthSignedMessageHash(messageHash);
 
-            bool isverified =  SignatureVerification.recoverSigner(ethSignedMessageHash, answer_instance.signature) == answer_instance.player;
+            bool isverified = SignatureVerification.recoverSigner(ethSignedMessageHash, answer_instance.signature)
+                == answer_instance.player;
 
-            if (isverified){
-                payout(quizinstance.pool,answer_instance.player);
+            if (isverified) {
+                payout(
+                    quizinstance.pool,
+                    answer_instance.player,
+                    correct_answer,
+                    correct_question,
+                    answer_instance.answer,
+                    answer_instance.question
+                );
             }
-
         }
     }
 
-
-    function payout(ISuperfluidPool pool,address player) public  {
-        uint member_unit = pool.getUnits(player);
-        updateMemberUnits(pool,player,uint128(member_unit));
+    function payout(
+        ISuperfluidPool pool,
+        address player,
+        string memory correct_answer,
+        string memory correct_question,
+        string memory playeranswer,
+        string memory playerquestion
+    ) public {
+        uint256 member_unit = pool.getUnits(player);
+        /// players answer is correct
+        if (
+            keccak256(abi.encode(correct_answer, correct_question))
+                == keccak256(abi.encode(playeranswer, playerquestion))
+        ) {
+            // increase 10% flow
+            uint256 new_unit = (member_unit * 110) / 100;
+            updateMemberUnits(pool, player, uint128(new_unit));
+        }
+        // player answer is incorrect
+        else {
+            // reduce 10% flow
+            uint256 new_unit = (member_unit * 90) / 100;
+            updateMemberUnits(pool, player, uint128(new_unit));
+        }
     }
 
-    function updateMemberUnits(ISuperfluidPool pool,address member, uint128 units) public {
+    function updateMemberUnits(ISuperfluidPool pool, address member, uint128 units) public {
         superToken.updateMemberUnits(pool, member, units);
     }
-
 
     modifier onlyAdmin(string memory id) {
         require(msg.sender == id_to_quizinstance[id].admin);
