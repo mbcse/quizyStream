@@ -16,7 +16,7 @@ const socket = io("http://localhost:4000"); // Replace with your backend URL
 
 interface Player {
   id: string;
-  name: string;
+  playerAddress: string;
 }
 
 interface Question {
@@ -35,6 +35,7 @@ export default function ControlQuiz() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [roomId, setRoomId] = useState("")
   const router = useRouter();
 
   const searchParams = useSearchParams();
@@ -42,8 +43,12 @@ export default function ControlQuiz() {
   useEffect(() => {
     // Fetch the quiz data based on the query parameter in the URL
     const fetchQuiz = async () => {
-      const quizId = searchParams.get("id"); // Extract quiz ID from URL query params
+      const quizId = searchParams.get("quizId"); // Extract quiz ID from URL query params
       if (!quizId) return;
+
+      const roomId = searchParams.get("roomId");
+      socket.emit("createRoom", roomId);
+      setRoomId(roomId);
 
       const response = await fetch(`/api/get-quiz?id=${quizId}`);
       if (response.ok) {
@@ -57,14 +62,14 @@ export default function ControlQuiz() {
     fetchQuiz();
 
     // Listen for players joining the quiz
-    socket.on("playerJoined", (player: Player) => {
-      setPlayers((prevPlayers) => [...prevPlayers, player]);
-    });
 
-    return () => {
-      socket.off("playerJoined");
-    };
-  }, [searchParams.get("id")]);
+  }, [searchParams.get("quizId")]);
+
+  socket.on("playerJoined", (players: Player[]) => {
+    console.log(players)
+    console.log("Player joined")
+    setPlayers(players);
+  });
 
   const startQuiz = () => {
     if (quiz) {
@@ -75,7 +80,8 @@ export default function ControlQuiz() {
   const showNextQuestion = () => {
     if (quiz && currentQuestionIndex < quiz.questions.length - 1) {
       setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-      socket.emit("showQuestion", quiz.questions[currentQuestionIndex + 1]);
+      console.log(quiz.questions[currentQuestionIndex + 1])
+      socket.emit("showQuestion", roomId, quiz.questions[currentQuestionIndex + 1]);
     }
   };
 
@@ -83,9 +89,11 @@ export default function ControlQuiz() {
     <VStack spacing={4} align="center" justify="center" height="100vh">
       <Text fontSize="3xl">Quiz Control</Text>
       <Box>
+      <Text fontSize="xl">Room Id: {roomId}</Text>
+
         <Text fontSize="xl">Players Joined:</Text>
         {players.map((player) => (
-          <Text key={player.id}>{player.name}</Text>
+          <Text key={player.id}>{player.playerAddress}</Text>
         ))}
       </Box>
       <Button colorScheme="green" onClick={startQuiz} disabled={!quiz}>

@@ -96,12 +96,12 @@ export default function MyCreatedQuizzes() {
       const response = await fetch("/api/generate-room-id");
       if (response.ok) {
         const data = await response.json();
-        router.push(`/dashboard/start-quiz?id=${quizId}&roomId=${data.roomId}`);
+        router.push(`/dashboard/start-quiz?quizId=${quizId}&roomId=${data.roomId}`);
       } else {
-        notifyError("Failed to generate room ID.");
+        notifyError({title: "Error", message:"Failed to generate roomid"});
       }
     } catch (error) {
-      notifyError("An error occurred while generating room ID.");
+      notifyError({title: "Error", message:"Error"});
     } finally {
       setIsLoading(false);
     }

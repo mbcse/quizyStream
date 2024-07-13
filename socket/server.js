@@ -22,18 +22,21 @@ const rooms = [];
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
 
-  socket.on('createRoom', (owner) => {
-    const roomId = Math.random().toString(36).substring(2, 8);
-    rooms.push({ id: roomId, owner: owner, players: [] });
+  socket.on('createRoom', (roomId) => {
+    console.log("Room created")
+    // const roomId = Math.random().toString(36).substring(2, 8);
+    rooms.push({ id: roomId, players: [] });
     socket.join(roomId);
     socket.emit('roomCreated', roomId);
   });
 
-  socket.on('joinRoom', ({ roomId, playerName }) => {
+  socket.on('joinRoom', (roomId, playerAddress ) => {
+    console.log("Room joined by " + roomId + " with " + playerAddress)
     const room = rooms.find((room) => room.id === roomId);
     if (room) {
-      room.players.push({ id: socket.id, name: playerName });
+      room.players.push({ id: socket.id, playerAddress });
       socket.join(roomId);
+      console.log(room)
       io.to(roomId).emit('playerJoined', room.players);
     } else {
       socket.emit('error', 'Room not found');
@@ -41,6 +44,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('startQuiz', (roomId) => {
+    console.log('Starting quiz for ' + roomId);
     const room = rooms.find((room) => room.id === roomId);
     if (room) {
       io.to(roomId).emit('quizStarted');
@@ -55,6 +59,12 @@ io.on('connection', (socket) => {
       room.players = room.players.filter((player) => player.id !== socket.id);
       io.to(room.id).emit('playerLeft', room.players);
     });
+  });
+
+  socket.on('showQuestion', (roomId, question ) => {
+    console.log('Showing question for ' + roomId);
+    console.log(question);
+    io.to(roomId).emit('showQuestion', question);
   });
 });
 

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Box, Text, VStack } from "@chakra-ui/react";
 import { useSearchParams } from 'next/navigation';
 import { io } from "socket.io-client";
+import { useAccount } from "wagmi";
 
 const socket = io("http://localhost:4000"); // Replace with your backend URL
 
@@ -14,6 +15,8 @@ interface Question {
 }
 
 export default function PlayQuiz() {
+
+  const account = useAccount()
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const searchParams = useSearchParams();
   const roomId = searchParams.get("roomId");
@@ -21,7 +24,7 @@ export default function PlayQuiz() {
   useEffect(() => {
     if (!roomId) return;
 
-    socket.emit("joinRoom", roomId);
+    socket.emit("joinRoom", roomId, account.address);
 
     socket.on("showQuestion", (question: Question) => {
       setCurrentQuestion(question);
