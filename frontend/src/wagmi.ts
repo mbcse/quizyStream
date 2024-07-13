@@ -54,7 +54,6 @@ const transports: Record<number, Transport> = {
   
 };
 
-console.log(baseSepolia)
 export const wagmiConfig = createConfig({
   chains: [
     baseSepolia

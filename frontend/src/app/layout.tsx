@@ -13,9 +13,9 @@ import {Providers} from "./providers";
 const open_sans = Open_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "TokenTreat",
-  applicationName: "TokenTreat",
-  description: "Create coupons/cards and treat the world with tokens",
+  title: "QuizyStream",
+  applicationName: "QuizyStream",
+  description: "Quiz with streams",
   authors: {
     name: "Mohit",
     url: "",

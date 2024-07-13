@@ -10,8 +10,8 @@
     "type": "git"
   },
   "scripts": {
-    "dev": "tsc --project tsconfig.server.json && next dev",
-    "build": "next build && tsc --project tsconfig.server.json",
+    "dev": "next dev",
+    "build": "next build",
     "start": "next start",
     "prettier": "prettier --write \"**/*.{ts,tsx,js}\"",
     "lint": "next lint --fix",
