@@ -1,7 +1,7 @@
 import { sep } from "path";
 
 import { createId } from "@paralleldrive/cuid2";
-import { JsonRpcApiProvider, Wallet, Contract, JsonRpcProvider } from "ethers";
+import { JsonRpcApiProvider, Wallet, Contract, JsonRpcProvider, AbiCoder, ethers } from "ethers";
 import { NextResponse } from "next/server";
 
 import { QuizyStreamABI } from "../../../config";
@@ -43,7 +43,7 @@ export async function POST(request: any) {
     const quizOwnerData = await User.findById(quiz.createdBy)
 
 
-    const flowrate = 1;
+    const flowrate = 1000000000;
     const admin = quizOwnerData?.userAddress;
     const id = quizId.toString();
     const start_time = convertToUnixTimestamp(new Date());
@@ -55,7 +55,17 @@ export async function POST(request: any) {
     });
 
     console.log(playersAddresses)
-    const hashes = ["0x7c82ed594c5737681efc28786904c727fa29fc417a33c91f824a22333d3f3de1"];
+
+    const salt = 123
+    const hashes = quiz.questions.map((questionData) => {
+      const abiCoder = new ethers.AbiCoder();
+
+      const types = ['string', 'string', 'uint256'];
+      const values = [questionData.question, questionData.answer, salt];
+
+      const encodedData = abiCoder.encode(types, values);
+      return encodedData;
+    });
 
     console.log("Executing tx")
     const start_quiz_instance = await quizy_stream_contract_instance.start_new_quiz(

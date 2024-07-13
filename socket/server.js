@@ -43,6 +43,26 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('initiateQuiz', (roomId) => {
+    console.log('Initiating Quiz for ' + roomId);
+    const room = rooms.find((room) => room.id === roomId);
+    if (room) {
+      io.to(roomId).emit('QuizInitialized');
+    } else {
+      socket.emit('error', 'Room not found');
+    }
+  });
+
+  socket.on('connectedToRewardStream', (roomId, playerAddress) => {
+    console.log('Player connecting to Reward Stream ' + roomId);
+    const room = rooms.find((room) => room.id === roomId);
+    if (room) {
+      io.to(roomId).emit('rewardStreamConnectedByPlayer', playerAddress);
+    } else {
+      socket.emit('error', 'Room not found');
+    }
+  });
+
   socket.on('startQuiz', (roomId) => {
     console.log('Starting quiz for ' + roomId);
     const room = rooms.find((room) => room.id === roomId);

@@ -12,6 +12,8 @@ import {
 import { useRouter, useSearchParams } from 'next/navigation';
 import { io, Socket } from 'socket.io-client';
 
+import { useNotify } from '@/hooks';
+
 const socket: Socket = io('http://localhost:4000'); // Replace with your backend URL
 
 interface Player {
@@ -40,8 +42,12 @@ export default function ControlQuiz() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const [quizInitiated, setQuizInitiated] = useState(false);
+  const {notifySuccess} = useNotify()
+
   useEffect(() => {
     // Fetch the quiz data based on the query parameter in the URL
+
     const fetchQuiz = async () => {
       const quizId = searchParams.get('quizId'); // Extract quiz ID from URL query params
       if (!quizId) return;
@@ -82,6 +88,10 @@ export default function ControlQuiz() {
 
     });
 
+    socket.on("rewardStreamConnectedByPlayer", (playerAddress) => {
+      notifySuccess({title: "Player Connected to Reward Stream", message:`Player ${playerAddress} successfully Connected to Reward Stream`})
+    })
+
     // Listen for quiz question broadcast
     socket.on('showQuestion', (question: Question) => {
       console.log('Showing question:', question);
@@ -94,6 +104,32 @@ export default function ControlQuiz() {
       socket.off('showQuestion');
     };
   }, [searchParams.get('quizId')]);
+
+
+  const initiateQuiz = async () => {
+    if (quiz) {
+
+
+      const response = await fetch('/api/start-quiz-tx', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ players, quizId: searchParams.get('quizId')  }),
+      });
+
+      if (response.ok) {
+        // notifySuccess("Questions submitted successfully!");
+
+        socket.emit('initiateQuiz', roomId);
+        setQuizInitiated(true)
+      } else {
+        // notifyError("Failed to submit questions.");
+      }
+      
+      
+    }
+  };
 
   const startQuiz = async () => {
     if (quiz) {
@@ -119,6 +155,9 @@ export default function ControlQuiz() {
     }
   };
 
+
+
+
   const showNextQuestion = () => {
     if (quiz && currentQuestionIndex < quiz.questions.length - 1) {
       setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
@@ -142,9 +181,18 @@ export default function ControlQuiz() {
         ))}
       </Box>
       {!showingQuestion && (
-        <Button colorScheme="green" onClick={startQuiz} disabled={!quiz}>
-          Start Quiz
-        </Button>
+
+          quizInitiated ? (
+            <Button colorScheme="green" onClick={startQuiz} disabled={!quiz}>
+              Start Quiz
+            </Button>
+          ) :
+          (
+            <Button colorScheme="green" onClick={initiateQuiz} disabled={!quiz}>
+              Initiate Quiz
+            </Button>
+          )
+        
       )}
       {showingQuestion && quiz && (
         <Flex direction="column" align="center">

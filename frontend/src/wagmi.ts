@@ -13,7 +13,7 @@ import {
 import type { Transport } from "viem";
 import { createConfig, http } from "wagmi";
 import {
-  baseSepolia,
+  sepolia
 } from "wagmi/chains";
 
 import linea_logo from "../public/img/linea_logo.png";
@@ -44,19 +44,19 @@ const connectors = connectorsForWallets(
       ],
     },
   ],
-  { appName: "TokenTreat", projectId: walletConnectProjectId },
+  { appName: "QuizyStream", projectId: walletConnectProjectId },
 );
 
 // Fix missing icons
 
 const transports: Record<number, Transport> = {
-  [baseSepolia.id]: http(),
+  [sepolia.id]: http(),
   
 };
 
 export const wagmiConfig = createConfig({
   chains: [
-    baseSepolia
+    sepolia
   ],
   connectors,
   transports,

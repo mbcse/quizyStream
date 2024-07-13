@@ -28,7 +28,7 @@ export async function GET(request: any) {
     let quiz_id = "";
     let question_number = "";
     let answer :[]= [];
-    let questionsalt = ;
+    let questionsalt = 123;
     let correct_question = ;
     let correct_answer = ;
 

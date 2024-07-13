@@ -93,7 +93,7 @@ export default function MyCreatedQuizzes() {
   const startQuiz = async (quizId: string) => {
     try {
       setIsLoading(true);
-      const response = await fetch("/api/generate-room-id");
+      const response = await fetch(`/api/generate-room-id?quizId=${quizId}`);
       if (response.ok) {
         const data = await response.json();
         router.push(`/dashboard/start-quiz?quizId=${quizId}&roomId=${data.roomId}`);
