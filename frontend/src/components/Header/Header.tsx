@@ -50,8 +50,8 @@ const Header: FC = () => {
 
       <HStack>
         <Button colorScheme='green'><Link href="/dashboard"> Dashboard </Link></Button>
-        {/* <DynamicWidget /> */}
-        <ConnectButton />
+        <DynamicWidget />
+        {/* <ConnectButton /> */}
 
         <DarkModeButton />
       </HStack>

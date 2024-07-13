@@ -64,7 +64,15 @@ export default function ControlQuiz() {
     // Listen for players joining the quiz
     socket.on('playerJoined', (players: Player[]) => {
       console.log('Players joined:', players);
-      setPlayers(players);
+      setPlayers((prevPlayers) => {
+        const uniquePlayers = [
+          ...prevPlayers,
+          ...players.filter(
+            (player) => !prevPlayers.some((p) => p.id === player.id)
+          ),
+        ];
+        return uniquePlayers;
+      });
     });
 
     // Listen for quiz start
@@ -87,8 +95,24 @@ export default function ControlQuiz() {
     };
   }, [searchParams.get('quizId')]);
 
-  const startQuiz = () => {
+  const startQuiz = async () => {
     if (quiz) {
+
+
+      const response = await fetch('/api/start-quiz-tx', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ players, quizId: searchParams.get('quizId')  }),
+      });
+
+      if (response.ok) {
+        // notifySuccess("Questions submitted successfully!");
+      } else {
+        // notifyError("Failed to submit questions.");
+      }
+      
       socket.emit('startQuiz', quiz._id);
       setShowingQuestion(true);
       socket.emit('showQuestion', roomId, quiz.questions[currentQuestionIndex]);

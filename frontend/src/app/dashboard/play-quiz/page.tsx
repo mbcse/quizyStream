@@ -24,16 +24,15 @@ export default function PlayQuiz() {
   useEffect(() => {
     if (!roomId) return;
 
+    console.log("joining Room")
     socket.emit("joinRoom", roomId, account.address);
 
-    socket.on("showQuestion", (question: Question) => {
-      setCurrentQuestion(question);
-    });
+  }, []);
 
-    return () => {
-      socket.off("showQuestion");
-    };
-  }, [roomId]);
+
+  socket.on("showQuestion", (question: Question) => {
+    setCurrentQuestion(question);
+  });
 
   return (
     <VStack spacing={4} align="center" justify="center" height="100vh">

@@ -20,7 +20,6 @@ const Quiz3Landing: FC = () => {
   const [roomId, setRoomId] = useState("");
 
   const handleJoinQuiz = (id: string) => {
-    socket.emit('joinQuiz', "Mohit");
     setIsLoading(true); // Set loading state before navigation
     router.push(`/dashboard/play-quiz?roomId=${id}`);
     // Note: No need to set isLoading(false) here as navigation will cause component unmount
