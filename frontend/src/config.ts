@@ -3,179 +3,39 @@ import type { Abi } from "viem";
 import type { ABI_TYPE } from "./types";
 
 export const QuizyStreamABI = [
+    {
+      "type": "constructor",
+      "inputs": [
         {
-          "type": "constructor",
-          "inputs": [
-            {
-              "name": "_superToken",
-              "type": "address",
-              "internalType": "contract ISuperToken"
-            }
-          ],
-          "stateMutability": "nonpayable"
+          "name": "_superToken",
+          "type": "address",
+          "internalType": "contract ISuperToken"
+        }
+      ],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "aggregate_answers",
+      "inputs": [
+        { "name": "quiz_id", "type": "string", "internalType": "string" },
+        {
+          "name": "question_number",
+          "type": "uint256",
+          "internalType": "uint256"
         },
         {
-          "type": "function",
-          "name": "aggregate_answers",
-          "inputs": [
-            { "name": "quiz_id", "type": "string", "internalType": "string" },
-            {
-              "name": "question_number",
-              "type": "uint256",
-              "internalType": "uint256"
-            },
-            {
-              "name": "answer",
-              "type": "tuple[]",
-              "internalType": "struct QuizyStream.Answer[]",
-              "components": [
-                { "name": "answer", "type": "string", "internalType": "string" },
-                { "name": "question", "type": "string", "internalType": "string" },
-                {
-                  "name": "timestamp",
-                  "type": "uint256",
-                  "internalType": "uint256"
-                },
-                { "name": "quiz_id", "type": "uint256", "internalType": "uint256" },
-                {
-                  "name": "question_number",
-                  "type": "uint256",
-                  "internalType": "uint256"
-                },
-                { "name": "player", "type": "address", "internalType": "address" },
-                { "name": "signature", "type": "bytes", "internalType": "bytes" }
-              ]
-            },
-            {
-              "name": "questionsalt",
-              "type": "uint256",
-              "internalType": "uint256"
-            },
-            {
-              "name": "correct_question",
-              "type": "string",
-              "internalType": "string"
-            },
-            { "name": "correct_answer", "type": "string", "internalType": "string" }
-          ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
-        },
-        {
-          "type": "function",
-          "name": "distributeFlow",
-          "inputs": [
-            {
-              "name": "pool",
-              "type": "address",
-              "internalType": "contract ISuperfluidPool"
-            },
-            { "name": "flowRate", "type": "int96", "internalType": "int96" }
-          ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
-        },
-        {
-          "type": "function",
-          "name": "id_to_quizinstance",
-          "inputs": [{ "name": "", "type": "string", "internalType": "string" }],
-          "outputs": [
-            { "name": "flowrate", "type": "int96", "internalType": "int96" },
-            { "name": "admin", "type": "address", "internalType": "address" },
-            { "name": "start_time", "type": "uint256", "internalType": "uint256" },
-            { "name": "end_time", "type": "uint256", "internalType": "uint256" },
-            { "name": "questions_num", "type": "uint8", "internalType": "uint8" },
-            { "name": "interval", "type": "uint8", "internalType": "uint8" },
-            {
-              "name": "pool",
-              "type": "address",
-              "internalType": "contract ISuperfluidPool"
-            }
-          ],
-          "stateMutability": "view"
-        },
-        {
-          "type": "function",
-          "name": "payout",
-          "inputs": [
-            {
-              "name": "pool",
-              "type": "address",
-              "internalType": "contract ISuperfluidPool"
-            },
-            { "name": "player", "type": "address", "internalType": "address" },
-            {
-              "name": "correct_answer",
-              "type": "string",
-              "internalType": "string"
-            },
-            {
-              "name": "correct_question",
-              "type": "string",
-              "internalType": "string"
-            },
-            { "name": "playeranswer", "type": "string", "internalType": "string" },
-            { "name": "playerquestion", "type": "string", "internalType": "string" }
-          ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
-        },
-        {
-          "type": "function",
-          "name": "start_new_quiz",
-          "inputs": [
-            { "name": "flowrate", "type": "int96", "internalType": "int96" },
-            { "name": "admin", "type": "address", "internalType": "address" },
-            { "name": "id", "type": "string", "internalType": "string" },
-            { "name": "start_time", "type": "uint256", "internalType": "uint256" },
-            { "name": "end_time", "type": "uint256", "internalType": "uint256" },
-            { "name": "question_num", "type": "uint8", "internalType": "uint8" },
-            { "name": "interval", "type": "uint8", "internalType": "uint8" },
-            { "name": "players", "type": "address[]", "internalType": "address[]" },
-            { "name": "hashes", "type": "bytes32[]", "internalType": "bytes32[]" }
-          ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
-        },
-        {
-          "type": "function",
-          "name": "superToken",
-          "inputs": [],
-          "outputs": [
-            {
-              "name": "",
-              "type": "address",
-              "internalType": "contract ISuperToken"
-            }
-          ],
-          "stateMutability": "view"
-        },
-        {
-          "type": "function",
-          "name": "updateMemberUnits",
-          "inputs": [
-            {
-              "name": "pool",
-              "type": "address",
-              "internalType": "contract ISuperfluidPool"
-            },
-            { "name": "member", "type": "address", "internalType": "address" },
-            { "name": "units", "type": "uint128", "internalType": "uint128" }
-          ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
-        },
-        {
-          "type": "function",
-          "name": "user_to_id_to_answer",
-          "inputs": [
-            { "name": "", "type": "address", "internalType": "address" },
-            { "name": "", "type": "string", "internalType": "string" }
-          ],
-          "outputs": [
+          "name": "answer",
+          "type": "tuple[]",
+          "internalType": "struct QuizyStream.Answer[]",
+          "components": [
             { "name": "answer", "type": "string", "internalType": "string" },
             { "name": "question", "type": "string", "internalType": "string" },
-            { "name": "timestamp", "type": "uint256", "internalType": "uint256" },
+            {
+              "name": "timestamp",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
             { "name": "quiz_id", "type": "uint256", "internalType": "uint256" },
             {
               "name": "question_number",
@@ -184,11 +44,150 @@ export const QuizyStreamABI = [
             },
             { "name": "player", "type": "address", "internalType": "address" },
             { "name": "signature", "type": "bytes", "internalType": "bytes" }
-          ],
-          "stateMutability": "view"
+          ]
+        },
+        {
+          "name": "questionsalt",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "correct_question",
+          "type": "string",
+          "internalType": "string"
+        },
+        { "name": "correct_answer", "type": "string", "internalType": "string" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "distributeFlow",
+      "inputs": [
+        {
+          "name": "pool",
+          "type": "address",
+          "internalType": "contract ISuperfluidPool"
+        },
+        { "name": "flowRate", "type": "int96", "internalType": "int96" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "id_to_quizinstance",
+      "inputs": [{ "name": "", "type": "string", "internalType": "string" }],
+      "outputs": [
+        { "name": "flowrate", "type": "int96", "internalType": "int96" },
+        { "name": "admin", "type": "address", "internalType": "address" },
+        { "name": "start_time", "type": "uint256", "internalType": "uint256" },
+        { "name": "end_time", "type": "uint256", "internalType": "uint256" },
+        { "name": "questions_num", "type": "uint8", "internalType": "uint8" },
+        { "name": "interval", "type": "uint8", "internalType": "uint8" },
+        {
+          "name": "pool",
+          "type": "address",
+          "internalType": "contract ISuperfluidPool"
         }
-      
-]
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "payout",
+      "inputs": [
+        {
+          "name": "pool",
+          "type": "address",
+          "internalType": "contract ISuperfluidPool"
+        },
+        { "name": "player", "type": "address", "internalType": "address" },
+        {
+          "name": "correct_answer",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "correct_question",
+          "type": "string",
+          "internalType": "string"
+        },
+        { "name": "playeranswer", "type": "string", "internalType": "string" },
+        { "name": "playerquestion", "type": "string", "internalType": "string" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "start_new_quiz",
+      "inputs": [
+        { "name": "flowrate", "type": "int96", "internalType": "int96" },
+        { "name": "admin", "type": "address", "internalType": "address" },
+        { "name": "id", "type": "string", "internalType": "string" },
+        { "name": "start_time", "type": "uint256", "internalType": "uint256" },
+        { "name": "end_time", "type": "uint256", "internalType": "uint256" },
+        { "name": "question_num", "type": "uint8", "internalType": "uint8" },
+        { "name": "interval", "type": "uint8", "internalType": "uint8" },
+        { "name": "players", "type": "address[]", "internalType": "address[]" },
+        { "name": "hashes", "type": "bytes32[]", "internalType": "bytes32[]" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "superToken",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "contract ISuperToken"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "updateMemberUnits",
+      "inputs": [
+        {
+          "name": "pool",
+          "type": "address",
+          "internalType": "contract ISuperfluidPool"
+        },
+        { "name": "member", "type": "address", "internalType": "address" },
+        { "name": "units", "type": "uint128", "internalType": "uint128" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "user_to_id_to_answer",
+      "inputs": [
+        { "name": "", "type": "address", "internalType": "address" },
+        { "name": "", "type": "string", "internalType": "string" }
+      ],
+      "outputs": [
+        { "name": "answer", "type": "string", "internalType": "string" },
+        { "name": "question", "type": "string", "internalType": "string" },
+        { "name": "timestamp", "type": "uint256", "internalType": "uint256" },
+        { "name": "quiz_id", "type": "uint256", "internalType": "uint256" },
+        {
+          "name": "question_number",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        { "name": "player", "type": "address", "internalType": "address" },
+        { "name": "signature", "type": "bytes", "internalType": "bytes" }
+      ],
+      "stateMutability": "view"
+    }
+  ]
 
 export const ERC20ABI = [
     {

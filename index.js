@@ -230,7 +230,7 @@ async function main(){
     const signer = new ethers.Wallet("0xb5d90cee9918bcd04d62fc112265f8f4cfdb3854d7f6f8eb441071bd872101a3",provider);
     console.log("signer",signer);
 
-    const abi = ["function approve(address to ,uint256 amount) external", "function upgrade(uint256) external" ]
+    const abi = ["function approve(address to ,uint256 amount) external", "function upgrade(uint256) external", "function transfer(address to ,uint amount) external"]
 
     let super_token_contract_instance = new ethers.Contract("0xC8e4F9AD94a36863f98298DAb7B07685CC5f831F",abi,signer);
     let ape_coin_erc20 = new ethers.Contract("0x755457DBC2aAa7568169C58942755c8Bf2b406d1",ERC20ABI,signer);
@@ -238,7 +238,9 @@ async function main(){
 
     // let approve = await ape_coin_erc20.approve("0xC8e4F9AD94a36863f98298DAb7B07685CC5f831F",ethers.utils.parseEther("100"));
 
-    let mint_super_tokens = await super_token_contract_instance.upgrade(ethers.utils.parseEther("100"));
+    // let mint_super_tokens = await super_token_contract_instance.upgrade(ethers.utils.parseEther("100"));
+
+    let send_super_token_approve = await super_token_contract_instance.transfer("0x57F6525e7b6Dc2424c090925D7bb9B186c1E4568",ethers.utils.parseEther("1"));
 
 }
 
