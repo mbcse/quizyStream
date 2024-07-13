@@ -23,14 +23,13 @@ import {
   ModalCloseButton,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useRouter} from 'next/router'
+import { useRouter } from "next/navigation"; // Change import to next/navigation
 import { useAccount } from "wagmi";
 
 import { Footer, Header } from "@/components";
 import LoadingScreen from "@/components/MainPane/components/LoadingScreen";
 import { SideBar } from "@/components/Sidebar";
 import { useNotify } from "@/hooks";
-
 
 // Type definitions
 interface Option {
@@ -64,10 +63,10 @@ export default function MyCreatedQuizzes() {
     const fetchQuizzes = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch('/api/get-quizzes', {
-          method: 'GET',
+        const response = await fetch("/api/get-quizzes", {
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         });
         if (response.ok) {
@@ -91,11 +90,30 @@ export default function MyCreatedQuizzes() {
     onOpen();
   };
 
+  const startQuiz = async (quizId: string) => {
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/generate-room-id");
+      if (response.ok) {
+        const data = await response.json();
+        router.push(`/dashboard/start-quiz?id=${quizId}&roomId=${data.roomId}`);
+      } else {
+        notifyError("Failed to generate room ID.");
+      }
+    } catch (error) {
+      notifyError("An error occurred while generating room ID.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Flex flexDirection="column" minHeight="100vh" bg="gray.50">
       <LoadingScreen isLoading={isLoading} />
       <Header />
-      <Text align="center" fontSize="4xl" my={6} color="purple.700">My Created Quizzes</Text>
+      <Text align="center" fontSize="4xl" my={6} color="purple.700">
+        My Created Quizzes
+      </Text>
       <Flex>
         <SideBar />
         <Box as="main" flex={1} p={6} ml="250px">
@@ -117,7 +135,19 @@ export default function MyCreatedQuizzes() {
                     <Td>{quiz.title}</Td>
                     <Td>{quiz.questions.length}</Td>
                     <Td>
-                      <Button colorScheme="blue" onClick={() => viewQuizDetails(quiz)}>View</Button>
+                      <Button
+                        colorScheme="blue"
+                        onClick={() => viewQuizDetails(quiz)}
+                      >
+                        View
+                      </Button>
+                      <Button
+                        colorScheme="green"
+                        ml={3}
+                        onClick={() => startQuiz(quiz._id)}
+                      >
+                        Start Quiz
+                      </Button>
                     </Td>
                   </Tr>
                 ))}
