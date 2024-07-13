@@ -60,7 +60,7 @@ contract QuizyStream {
         bytes32[] memory hashes
     ) public {
         require(id_to_quizinstance[id].start_time == 0, "same id ");
-        ISuperfluidPool pool = superToken.createPool((admin), poolConfig);
+        ISuperfluidPool pool = superToken.createPool((address(this)), poolConfig);
         QuizInstance memory quizinstance = QuizInstance({
             flowrate: flowrate,
             admin: admin,
@@ -73,6 +73,9 @@ contract QuizyStream {
             pool: pool
         });
         id_to_quizinstance[id] = quizinstance;
+        for (uint i = 0; i  < players.length; i++){
+            updateMemberUnits(pool, players[i], uint128(1));
+        }
         distributeFlow(pool, flowrate);
     }
 
@@ -82,6 +85,7 @@ contract QuizyStream {
 
     function distributeFlow(ISuperfluidPool pool, int96 flowRate) public {
         superToken.distributeFlow(address(this), pool, flowRate);
+
     }
 
     function aggregate_answers(

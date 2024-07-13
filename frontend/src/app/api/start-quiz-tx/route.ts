@@ -66,7 +66,7 @@ export async function POST(request: any) {
       end_time,
       question_num,
       interval,
-      playersAddresses,
+      ["0x88a84d2ef2f676d25e246b871d51a6ec788b8e55"],
       hashes,
     );
 

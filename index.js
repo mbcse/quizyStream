@@ -240,15 +240,17 @@ async function main(){
 
     // let mint_super_tokens = await super_token_contract_instance.upgrade(ethers.utils.parseEther("100"));
 
-    // let send_super_token_approve = await super_token_contract_instance.transfer("0x57F6525e7b6Dc2424c090925D7bb9B186c1E4568",ethers.utils.parseEther("1"));
+    // let send_super_token_approve = await super_token_contract_instance.transfer("0x52406E5e147f096d5bc2341b0Da74a1afE89B1eA",ethers.utils.parseEther("1"));
     
     let playersigner = new ethers.Wallet("0x7bdafdffee8ea9ea493b54511854b1b5e77b12854ec4deeee698726c3c21d602",provider);
-    const quizy_abi = ["function connectPool(address token, address pool) external"];
+    const quizy_abi = ["function connectPool(string id) external"];
 
-    let quizystream_contract = new ethers.Contract("0xbfcc068b68de95F1Ddda408e5C13Fcdd517002B0",quizy_abi,playersigner);
+    let quizystream_contract = new ethers.Contract("0x52406E5e147f096d5bc2341b0Da74a1afE89B1eA",quizy_abi,playersigner);
 
-    let connect_pool  = await quizystream_contract.connectPool("0xC8e4F9AD94a36863f98298DAb7B07685CC5f831F","0x31caf6b8E7A003EF19265a0814eD5893AAc8DbB2");
-    
+    let connect_pool  = await quizystream_contract.connectPool("669296c5054eae7684d45103");
+
+
+
 }
 
 main();
