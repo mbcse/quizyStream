@@ -23,12 +23,14 @@ import {
   ModalCloseButton,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useRouter} from 'next/router'
 import { useAccount } from "wagmi";
 
 import { Footer, Header } from "@/components";
 import LoadingScreen from "@/components/MainPane/components/LoadingScreen";
 import { SideBar } from "@/components/Sidebar";
 import { useNotify } from "@/hooks";
+
 
 // Type definitions
 interface Option {
@@ -50,6 +52,7 @@ interface Quiz {
 export default function MyCreatedQuizzes() {
   const { notifyError } = useNotify();
   const account = useAccount();
+  const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);

@@ -1,73 +1,57 @@
-import { type FC, type ChangeEvent, type MouseEvent, useEffect, useState, useCallback } from "react";
+import { FC, useState } from "react";
 
-import { Box, Button, Flex, Input, Select, Text, VStack, useToken } from "@chakra-ui/react";
-import { ethers } from "ethers";
-// import { useRouter } from "next/router";
-// import { io } from 'socket.io-client';
-// import { baseSepolia } from "viem/chains";
-import { useAccount, useChainId, useReadContract, useWriteContract } from "wagmi";
+import { Box, Button, Flex, Input, Text, VStack } from "@chakra-ui/react";
+import { useRouter } from 'next/navigation';
+import { io } from 'socket.io-client';
+import { useAccount, useChainId } from "wagmi";
 
 import LoadingScreen from "./LoadingScreen";
 import { useNotify } from "@/hooks";
-// import { useSignMessageHook, useNotify } from "@/hooks";
-// import { getDefaultEthersSigner, getEthersSigner } from "@/utils/clientToEtherjsSigner";
-// import { uploadFile, uploadJson } from "@/utils/ipfsHelper";
-// import { createMetaData } from "@/utils/nftHelpers";
-// import { convertToUnixTimestamp } from "@/utils/timeUtils";
 
-
-
-// const socket = io("http://localhost:3005"); 
+const socket = io("http://localhost:4000"); 
 
 const Quiz3Landing: FC = () => {
-
-  const account = useAccount()
-  const chainId = useChainId()
-  // const router = useRouter();
+  const router = useRouter();
+  const account = useAccount();
+  const chainId = useChainId();
+  const { notifyError, notifySuccess } = useNotify();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [roomId, setRoomId] = useState("");
 
-  const [roomId, setRoomId] = useState("")
- 
-  
-  const { notifyError, notifySuccess } = useNotify()
-
-  // const handleJoinQuiz = () => {
-  //   socket.emit('joinQuiz', "abc");
-  //   router.push('/play-quiz');
-  // };
+  const handleJoinQuiz = (id: string) => {
+    socket.emit('joinQuiz', "Mohit");
+    setIsLoading(true); // Set loading state before navigation
+    router.push(`/dashboard/play-quiz?id=${id}`);
+    // Note: No need to set isLoading(false) here as navigation will cause component unmount
+  };
 
   return (
     <Flex
-    w={"100%"}
-    display={"flex"}
-    justifyContent={"space-around"}
-    flexWrap={"wrap"}
-    gap={5}>
-
+      w={"100%"}
+      display={"flex"}
+      justifyContent={"space-around"}
+      flexWrap={"wrap"}
+      gap={5}
+    >
       <LoadingScreen isLoading={isLoading} />
 
       <VStack w={"45%"} minWidth={"270px"} gap={2} textAlign="left">
-
-        <VStack w={"45%"} minWidth={"270px"} gap={2} textAlign="left">
         <Text textAlign="left" fontWeight="bold">RoomId</Text>
         <Input
           value={roomId}
           onChange={(e) => setRoomId(e.target.value)}
-          type="textarea"
+          type="text"
           placeholder="Room Id"
         />
-      </VStack>
-        
         <Button
-          colorScheme='teal' variant='solid'
-          onClick={()=> {}}
+          onClick={() => handleJoinQuiz(roomId)}
           isLoading={isLoading}
-          className="custom-button"
+          colorScheme="teal"
+          variant="solid"
         >
           Enter Playground
         </Button>
-          
       </VStack>
     </Flex>
   );

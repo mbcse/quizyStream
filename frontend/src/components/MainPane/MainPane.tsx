@@ -1,4 +1,6 @@
 // components/MainPane.tsx
+"use client";
+
 import { type FC } from "react";
 
 import { Box, Divider, Flex, Heading, Text, useColorMode } from "@chakra-ui/react";

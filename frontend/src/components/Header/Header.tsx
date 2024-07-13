@@ -5,15 +5,17 @@ import { Button, HStack, Heading } from "@chakra-ui/react";
 import {
   DynamicWidget,
 } from "@dynamic-labs/sdk-react-core";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Image from "next/image";
 import Link from "next/link";
 import { useAccount } from "wagmi";
 
-import { useWindowSize } from "@/hooks/useWindowSize";
+
 
 import logo from "../../../public/img/logo_transparent.png";
 import TokenTreat from "../../../public/img/TokenTreat.svg";
 import { DarkModeButton } from "../DarkModeButton";
+import { useWindowSize } from "@/hooks/useWindowSize";
 
 
 
@@ -48,7 +50,9 @@ const Header: FC = () => {
 
       <HStack>
         <Button colorScheme='green'><Link href="/dashboard"> Dashboard </Link></Button>
-        <DynamicWidget />
+        {/* <DynamicWidget /> */}
+        <ConnectButton />
+
         <DarkModeButton />
       </HStack>
     </HStack>

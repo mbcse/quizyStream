@@ -1,3 +1,4 @@
+
 import type { ReactNode } from "react";
 
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
@@ -36,26 +37,26 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
     <html lang="en">
 
 
-      <DynamicContextProvider
+      {/* <DynamicContextProvider
           settings={{
           environmentId: "b94d1a6a-5b03-4a35-afb6-cf1fccf82d3a",
           walletConnectors: [EthereumWalletConnectors],
 
           }}
-      >
+      > */}
 
       <body className={open_sans.className}>
       
         <Providers>
-        <DynamicWagmiConnector>
+        {/* <DynamicWagmiConnector> */}
 
           {children}
-        </DynamicWagmiConnector>
+        {/* </DynamicWagmiConnector> */}
         </Providers>
 
       </body>
 
-      </DynamicContextProvider>
+      {/* </DynamicContextProvider> */}
     </html>
   );
 }
