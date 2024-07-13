@@ -11,7 +11,7 @@ contract QuizyStream {
 
     ISuperToken public superToken;
 
-    PoolConfig private poolConfig = PoolConfig({transferabilityForUnitsOwner: true, distributionFromAnyAddress: true});
+    PoolConfig private poolConfig = PoolConfig({transferabilityForUnitsOwner: false, distributionFromAnyAddress: true});
 
     constructor(ISuperToken _superToken) {
         superToken = _superToken;
@@ -34,6 +34,7 @@ contract QuizyStream {
     mapping(string => QuizInstance) public id_to_quizinstance;
 
     struct QuizInstance {
+        int96 flowrate;
         address admin;
         uint256 start_time;
         uint256 end_time;
@@ -48,6 +49,7 @@ contract QuizyStream {
     }
 
     function start_new_quiz(
+        int96 flowrate,
         address admin,
         string memory id,
         uint256 start_time,
@@ -60,6 +62,7 @@ contract QuizyStream {
         require(id_to_quizinstance[id].start_time == 0, "same id ");
         ISuperfluidPool pool = superToken.createPool((admin), poolConfig);
         QuizInstance memory quizinstance = QuizInstance({
+            flowrate:flowrate,
             admin: admin,
             start_time: start_time,
             end_time: end_time,
@@ -70,7 +73,7 @@ contract QuizyStream {
             pool: pool
         });
         id_to_quizinstance[id] = quizinstance;
-        distributeFlow(pool, flowRate);
+        distributeFlow(pool, flowrate);
     }
 
     function distributeFlow(ISuperfluidPool pool, int96 flowRate) public {
@@ -87,12 +90,12 @@ contract QuizyStream {
     ) external onlyAdmin(quiz_id) {
         QuizInstance memory quizinstance = id_to_quizinstance[quiz_id];
         require(question_number <= quizinstance.questions_num);
+            require(
+                quizinstance.questionanswerhash[question_number -1] == keccak256(abi.encode(correct_question, correct_answer, questionsalt))
+            );
         for (uint256 i = 0; i < answer.length; i++) {
             // todo check if player signature is really a player in the quiz id
 
-            require(
-                quizinstance.questionanswerhash == keccak256(abi.encode(correct_question, correct_answer, questionsalt))
-            );
             Answer memory answer_instance = answer[i];
             bytes32 messageHash = SignatureVerification.getMessageHash(
                 answer_instance.answer,
