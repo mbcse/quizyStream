@@ -63,6 +63,15 @@ export const QuizyStreamABI = [
     },
     {
       "type": "function",
+      "name": "connectPool",
+      "inputs": [
+        { "name": "quizid", "type": "string", "internalType": "string" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
       "name": "distributeFlow",
       "inputs": [
         {
@@ -119,6 +128,15 @@ export const QuizyStreamABI = [
       ],
       "outputs": [],
       "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "pooladdress",
+      "inputs": [
+        { "name": "quizid", "type": "string", "internalType": "string" }
+      ],
+      "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+      "stateMutability": "view"
     },
     {
       "type": "function",

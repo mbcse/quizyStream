@@ -74,7 +74,7 @@ contract QuizyStream {
         });
         id_to_quizinstance[id] = quizinstance;
         for (uint i = 0; i  < players.length; i++){
-            updateMemberUnits(pool, players[i], uint128(1));
+            updateMemberUnits(pool, players[i], uint128(100));
         }
         distributeFlow(pool, flowrate);
     }
