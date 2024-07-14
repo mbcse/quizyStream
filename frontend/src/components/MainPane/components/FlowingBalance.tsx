@@ -112,7 +112,7 @@ const FlowingBalance: React.FC<FlowingBalanceProps> = memo(({ startingBalance, s
 
   return (
     <div className="flowing-balance">
-      {decimalPlaces !== undefined
+      Streaming Reward &nbsp; {decimalPlaces !== undefined
         ? toFixedUsingString(formatEther(flowingBalance), decimalPlaces)
         : formatEther(flowingBalance)}
 

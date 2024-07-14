@@ -9,6 +9,7 @@ import { useAccount } from "wagmi";
 
 import {QuizyStreamABI, QuezyStreamAddress} from '../../../config'
 import FlowingBalance from "@/components/MainPane/components/FlowingBalance";
+import { useNotify } from "@/hooks";
 import { getDefaultEthersSigner } from "@/utils/clientToEtherjsSigner";
 import { convertToUnixTimestamp } from "@/utils/timeUtils";
 
@@ -42,6 +43,8 @@ export default function PlayQuiz() {
   const [startingDate, setStartingDate] = useState(new Date())
   const [flowRate, setFlowRate] = useState<bigint>(BigInt(0))
 
+  const {notifySuccess} = useNotify()
+
 
   setInterval(async ()=>{
     try {
@@ -52,7 +55,13 @@ export default function PlayQuiz() {
        const currentFlowRate = await quizyStreamContract.get_member_flow_rate(quizId, account.address)
   
        setFlowRate(currentFlowRate)
-  
+
+       if(flowRate <= currentFlowRate) {
+        notifySuccess({title: "Stream Updated", message: "Hurray! Stream went Up to " + currentFlowRate})
+       }else{
+        notifySuccess({title: "Stream Updated", message: "Oho! Stream went Down to " + currentFlowRate})
+       }
+
        console.log(currentFlowRate)
     } catch (error) {
       console.log(error)

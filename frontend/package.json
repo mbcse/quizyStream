@@ -46,6 +46,7 @@
     "sharp": "0.33.3",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
+    "styled-components": "^6.1.11",
     "viem": "^2.9.27",
     "wagmi": "^2.5.22"
   },
