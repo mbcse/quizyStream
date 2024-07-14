@@ -32,6 +32,8 @@ This is experimental software and is provided on an "as is" and "as available" b
 We do not give any warranties and will not be liable for any loss incurred through any use of this codebase.
 This code is strictly for educational purposes only. Not for production use.
 
+## Video Link 
+https://quizy-stream.vercel.app/
 
 ## Made with ❤️ by 
 - supernova
