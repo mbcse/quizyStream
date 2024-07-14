@@ -63,7 +63,7 @@ export async function POST(request: any) {
       const types = ['string', 'string', 'uint256'];
       const values = [questionData.question, questionData.answer, salt];
 
-      const encodedData = abiCoder.encode(types, values);
+      const encodedData = ethers.keccak256(abiCoder.encode(types, values));
       return encodedData;
     });
 

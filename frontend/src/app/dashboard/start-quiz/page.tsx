@@ -156,14 +156,45 @@ export default function ControlQuiz() {
   };
 
 
-
-
-  const showNextQuestion = () => {
-    if (quiz && currentQuestionIndex < quiz.questions.length - 1) {
-      setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-      socket.emit('showQuestion', roomId, quiz.questions[currentQuestionIndex + 1]);
-    }
+  const showNextQuestion = async () => {
+  try {
+      const resp = await fetch('/api/aggregate-answer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ questionNumber: currentQuestionIndex + 1, quizId: searchParams.get('quizId')  }),
+      });
+  
+      console.log(resp);
+  
+      if (quiz && currentQuestionIndex < quiz.questions.length - 1) {
+        setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+        socket.emit('showQuestion', roomId, quiz.questions[currentQuestionIndex + 1]);
+      }
+  } catch (error) {
+    console.log(error);
+  }
   };
+
+
+  const endQuiz = async () => {
+    try {
+        const resp = await fetch('/api/aggregate-answer', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ questionNumber: currentQuestionIndex + 1, quizId: searchParams.get('quizId')  }),
+        });
+    
+        console.log(resp);
+    } catch (error) {
+      console.log(error);
+    }
+    };
+
+
 
   const handleSelectOption = (selectedOption: string) => {
     // Logic to handle selected option (if needed)
@@ -207,11 +238,16 @@ export default function ControlQuiz() {
               ))}
             </VStack>
           </Box>
-          {currentQuestionIndex < quiz.questions.length - 1 && (
+          {currentQuestionIndex < quiz.questions.length - 1 ? (
             <Button colorScheme="blue" onClick={showNextQuestion}>
               Next Question
             </Button>
-          )}
+          ): (
+            <Button colorScheme="blue" onClick={endQuiz}>
+              End Question
+            </Button>
+          )
+        }
         </Flex>
       )}
     </VStack>

@@ -9,6 +9,7 @@ import { useAccount } from "wagmi";
 
 import {QuizyStreamABI, QuezyStreamAddress} from '../../../config'
 import { getDefaultEthersSigner } from "@/utils/clientToEtherjsSigner";
+import { convertToUnixTimestamp } from "@/utils/timeUtils";
 
 
 const socket = io("http://localhost:4000"); // Replace with your backend URL
@@ -30,6 +31,12 @@ export default function PlayQuiz() {
 
   const [connectToStream, setConnectedToStream] = useState(false)
 
+  const [quizId, setQuizId] = useState("")
+
+  const [selectedAnswer, setSelectedAnswer]  = useState("")
+
+  const [currentQuestionNumber, setCurrentQuestionNumber] = useState(0)
+
   useEffect(() => {
     if (!roomId) return;
 
@@ -50,6 +57,8 @@ export default function PlayQuiz() {
      const data = await quizIdResponse.json();
  
      const quizId = data.quizId
+
+     setQuizId(quizId)
  
      const tx = await quizyStreamContract.connectPool(quizId)
 
@@ -64,11 +73,54 @@ export default function PlayQuiz() {
 
   socket.on("showQuestion", (question: Question) => {
     setCurrentQuestion(question);
+    setCurrentQuestionNumber(currentQuestionNumber+1)
   });
 
   socket.on("QuizInitialized", () => {
     setQuizInitialized(true);
   })
+
+  const getMessageHash = (
+    answer: string,
+    timestamp: number,
+    quiz_id: string,
+    question_number: number,
+    player: string
+  ) => {
+    return ethers.solidityPackedKeccak256(
+      ['string', 'uint256', 'string', 'uint256', 'address'],
+      [answer, timestamp, quiz_id, question_number, player]
+    );
+  };
+
+
+  const getEthSignedMessageHash = (messageHash: string) => {
+    const messageBytes = ethers.getBytes(messageHash);
+    const prefix = ethers.toUtf8Bytes(`\x19Ethereum Signed Message:\n${messageBytes.length}`);
+    return ethers.keccak256(ethers.concat([prefix, messageBytes]));
+  };
+
+
+  const handleSelectOption = async (selectedOption: string, question: string, questionNumber: number) => {
+    // Logic to handle selected option (if needed)
+    console.log('Selected option:', selectedOption);
+    const signer = await getDefaultEthersSigner();
+    const unixtimestamp = convertToUnixTimestamp(new Date())
+    const messageHash = getMessageHash(selectedOption, unixtimestamp, quizId, questionNumber, account.address);
+    const ethSignedMessageHash = getEthSignedMessageHash(messageHash);
+    const signature = await signer.signMessage(ethers.getBytes(ethSignedMessageHash));
+
+    const resp = await fetch("/api/submit-answer", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ question, answer : selectedOption, questionNumber, unixTimestamp:unixtimestamp, quizId, roomId, playerAddress: account.address, signature}),
+    } )
+
+    setSelectedAnswer(selectedOption)
+
+  };
 
   return (
     <VStack spacing={4} align="center" justify="center" height="100vh">
@@ -76,9 +128,9 @@ export default function PlayQuiz() {
         <>
           <Text fontSize="3xl">{currentQuestion.question}</Text>
           {currentQuestion.options.map((option, index) => (
-            <Box key={index} bg="gray.200" p={4} borderRadius="md">
-              <Text>{option}</Text>
-            </Box>
+            <Button key={index} onClick={() => handleSelectOption(option, currentQuestion.question, currentQuestionNumber)}>
+            {option}
+          </Button>
           ))}
         </>
       ) : (

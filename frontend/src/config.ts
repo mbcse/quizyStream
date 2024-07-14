@@ -441,4 +441,4 @@ export const ERC20ABI = [
 ]
 
 
-export const QuezyStreamAddress = "0xA3D5Ce61b755bB3216fAE2863A0518Fda0Bf3c5E"
+export const QuezyStreamAddress = "0x7EE319781763d6D9421D206D10378f5683B883dD"

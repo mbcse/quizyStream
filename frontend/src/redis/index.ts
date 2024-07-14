@@ -23,9 +23,9 @@ const getRedisClient = async (): Promise<RedisClientType> => {
 };
 
 // Push map to Redis
-const pushMapToRedis = async (key: string, object: Record<string, string>): Promise<void> => {
+const pushMapToRedis = async (key: string, object: any): Promise<void> => {
   const client = await getRedisClient();
-  await client.hSet(key, object);
+  await client.hSet(key, JSON.stringify(object));
   console.log(`Pushed Map to Redis => ${key} -> ${JSON.stringify(object)}`);
   await client.disconnect();
 };
@@ -87,7 +87,7 @@ const getString = async (key: string): Promise<string | null> => {
 };
 
 // Get map from Redis
-const getMap = async (key: string): Promise<Record<string, string> | null> => {
+const getMap = async (key: string): Promise<any> => {
   const client = await getRedisClient();
   const value = await client.hGetAll(key);
   await client.disconnect();
