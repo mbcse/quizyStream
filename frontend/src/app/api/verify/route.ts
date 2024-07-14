@@ -1,6 +1,6 @@
 import { type IVerifyResponse, verifyCloudProof } from '@worldcoin/idkit'
 
-export default async function Get(req: NextApiRequest, res: NextApiResponse) {
+export async function GET(req: NextApiRequest, res: NextApiResponse) {
 	const proof = req.body
     const app_id = process.env.APP_ID
     const action = process.env.ACTION_ID
