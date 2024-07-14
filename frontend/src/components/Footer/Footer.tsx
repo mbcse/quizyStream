@@ -12,7 +12,7 @@ const Footer: FC = () => {
         target="_blank"
         rel="noopener noreferrer"
       >
-        Copyright@Quiz3
+        Copyright@QuizyStream
       </Link>
     </Box>
   );

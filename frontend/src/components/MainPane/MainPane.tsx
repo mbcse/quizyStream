@@ -23,7 +23,7 @@ const MainPane: FC = () => {
       border={colorMode === "light" ? "none" : "1px solid rgba(152, 161, 192, 0.24)"}
     >
       <Heading as="h2" fontSize={"2rem"} mb={1} className="text-shadow">
-        Quiz3
+        QuizyStream
       </Heading>
 
       <Heading as="h6" fontSize={"1rem"} mb={10} className="text-shadow">
