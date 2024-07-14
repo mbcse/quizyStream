@@ -38,7 +38,7 @@ library SignatureVerification {
     function getMessageHash(
         string memory answer,
         uint256 timestamp,
-        uint256 quiz_id,
+        string memory quiz_id,
         uint256 question_number,
         address player
     ) public pure returns (bytes32) {

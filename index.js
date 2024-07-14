@@ -236,18 +236,18 @@ async function main(){
     let ape_coin_erc20 = new ethers.Contract("0x755457DBC2aAa7568169C58942755c8Bf2b406d1",ERC20ABI,signer);
     console.log("ape coin erc20",ape_coin_erc20);
 
-    let approve = await ape_coin_erc20.approve("0xC8e4F9AD94a36863f98298DAb7B07685CC5f831F",ethers.utils.parseEther("100"));
+    // let approve = await ape_coin_erc20.approve("0xC8e4F9AD94a36863f98298DAb7B07685CC5f831F",ethers.utils.parseEther("100000"));
 
-    let mint_super_tokens = await super_token_contract_instance.upgrade(ethers.utils.parseEther("100"));
+    // let mint_super_tokens = await super_token_contract_instance.upgrade(ethers.utils.parseEther("99000"));
 
-    // let send_super_token_approve = await super_token_contract_instance.transfer("0x52406E5e147f096d5bc2341b0Da74a1afE89B1eA",ethers.utils.parseEther("1"));
+    let send_super_token_approve = await super_token_contract_instance.transfer("0xf7454FAD1c929002A9A45074578f9F34EA940a7F",ethers.utils.parseEther("10"));
     
     // let playersigner = new ethers.Wallet("0x7bdafdffee8ea9ea493b54511854b1b5e77b12854ec4deeee698726c3c21d602",provider);
     // const quizy_abi = ["function connectPool(string id) external"];
 
-    // let quizystream_contract = new ethers.Contract("0x52406E5e147f096d5bc2341b0Da74a1afE89B1eA",quizy_abi,playersigner);
+    // let quizystream_contract = new ethers.Contract("0x695fA833CC55A5B6D198E18753447dD23852717B",quizy_abi,playersigner);
 
-    // let connect_pool  = await quizystream_contract.connectPool("669296c5054eae7684d45103");
+    // let connect_pool  = await quizystream_contract.connectPool("669318e35dd0356b41805f33");
 
 
 

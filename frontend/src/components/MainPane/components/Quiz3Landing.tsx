@@ -1,5 +1,6 @@
+'use client' // for Next.js app router
 import { FC, useState } from "react";
-
+import { IDKitWidget, VerificationLevel, ISuccessResult } from '@worldcoin/idkit';
 import { Box, Button, Flex, Input, Text, VStack } from "@chakra-ui/react";
 import { useRouter } from 'next/navigation';
 import { io } from 'socket.io-client';
@@ -20,10 +21,34 @@ const Quiz3Landing: FC = () => {
   const [roomId, setRoomId] = useState("");
 
   const handleJoinQuiz = (id: string) => {
+
     setIsLoading(true); // Set loading state before navigation
-    router.push(`/dashboard/play-quiz?roomId=${id}`);
+
+    
+
     // Note: No need to set isLoading(false) here as navigation will cause component unmount
   };
+
+  
+
+  const onSuccess = () => {
+   
+    router.push(`/dashboard/play-quiz?roomId=${id}`);
+};
+
+  const handleVerify = async (proof: ISuccessResult) => {
+    const res = await fetch("/api/verify", { // route to your backend will depend on implementation
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(proof),
+    })
+    if (!res.ok) {
+        throw new Error("Verification failed."); // IDKit will display the error message to the user in the modal
+    }
+};
+
 
   return (
     <Flex
@@ -34,6 +59,18 @@ const Quiz3Landing: FC = () => {
       gap={5}
     >
       <LoadingScreen isLoading={isLoading} />
+      <IDKitWidget
+	app_id="your app id" // obtained from the Developer Portal
+	action="your action id" // obtained from the Developer Portal
+	onSuccess={onSuccess} // callback when the modal is closed
+	handleVerify={handleVerify} // callback when the proof is received
+	verification_level={VerificationLevel.Orb}
+>
+	{({ open }) => 
+        // This is the button that will open the IDKit modal
+        <button onClick={open}>Verify with World ID</button>
+    }
+</IDKitWidget>
 
       <VStack w={"45%"} minWidth={"270px"} gap={2} textAlign="left">
         <Text textAlign="left" fontWeight="bold">RoomId</Text>
@@ -44,7 +81,7 @@ const Quiz3Landing: FC = () => {
           placeholder="Room Id"
         />
         <Button
-          onClick={() => handleJoinQuiz(roomId)}
+          onClick={() => open()}
           isLoading={isLoading}
           colorScheme="teal"
           variant="solid"

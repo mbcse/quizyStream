@@ -36,7 +36,7 @@ export const QuizyStreamABI = [
               "type": "uint256",
               "internalType": "uint256"
             },
-            { "name": "quiz_id", "type": "uint256", "internalType": "uint256" },
+            { "name": "quiz_id", "type": "string", "internalType": "string" },
             {
               "name": "question_number",
               "type": "uint256",
@@ -83,6 +83,16 @@ export const QuizyStreamABI = [
       ],
       "outputs": [],
       "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "get_member_flow_rate",
+      "inputs": [
+        { "name": "quizid", "type": "string", "internalType": "string" },
+        { "name": "member", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [{ "name": "", "type": "int96", "internalType": "int96" }],
+      "stateMutability": "view"
     },
     {
       "type": "function",
@@ -194,7 +204,7 @@ export const QuizyStreamABI = [
         { "name": "answer", "type": "string", "internalType": "string" },
         { "name": "question", "type": "string", "internalType": "string" },
         { "name": "timestamp", "type": "uint256", "internalType": "uint256" },
-        { "name": "quiz_id", "type": "uint256", "internalType": "uint256" },
+        { "name": "quiz_id", "type": "string", "internalType": "string" },
         {
           "name": "question_number",
           "type": "uint256",

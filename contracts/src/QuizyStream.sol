@@ -21,7 +21,7 @@ contract QuizyStream {
         string answer;
         string question;
         uint256 timestamp;
-        uint256 quiz_id;
+        string quiz_id;
         uint256 question_number;
         address player;
         bytes signature;
@@ -73,7 +73,7 @@ contract QuizyStream {
             pool: pool
         });
         id_to_quizinstance[id] = quizinstance;
-        for (uint i = 0; i  < players.length; i++){
+        for (uint256 i = 0; i < players.length; i++) {
             updateMemberUnits(pool, players[i], uint128(100));
         }
         distributeFlow(pool, flowrate);
@@ -85,7 +85,6 @@ contract QuizyStream {
 
     function distributeFlow(ISuperfluidPool pool, int96 flowRate) public {
         superToken.distributeFlow(address(this), pool, flowRate);
-
     }
 
     function aggregate_answers(
@@ -97,11 +96,11 @@ contract QuizyStream {
         string memory correct_answer
     ) external onlyAdmin(quiz_id) {
         QuizInstance memory quizinstance = id_to_quizinstance[quiz_id];
-        require(question_number <= quizinstance.questions_num);
+        require(question_number <= quizinstance.questions_num,"1");
         require(
             quizinstance.questionanswerhash[question_number - 1]
-                == keccak256(abi.encode(correct_question, correct_answer, questionsalt))
-        );
+                == keccak256(abi.encode(correct_question, correct_answer, questionsalt) )
+        ,"2");
         for (uint256 i = 0; i < answer.length; i++) {
             // todo check if player signature is really a player in the quiz id
 
@@ -170,5 +169,10 @@ contract QuizyStream {
     function connectPool(string memory quizid) public {
         ISuperfluidPool pool = id_to_quizinstance[quizid].pool;
         superToken.connectPool(pool);
+    }
+
+    function get_member_flow_rate(string memory quizid, address member) public view returns (int96) {
+        ISuperfluidPool pool = id_to_quizinstance[quizid].pool;
+        return pool.getMemberFlowRate(member);
     }
 }
