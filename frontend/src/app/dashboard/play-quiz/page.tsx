@@ -8,6 +8,7 @@ import { io } from "socket.io-client";
 import { useAccount } from "wagmi";
 
 import {QuizyStreamABI, QuezyStreamAddress} from '../../../config'
+import FlowingBalance from "@/components/MainPane/components/FlowingBalance";
 import { getDefaultEthersSigner } from "@/utils/clientToEtherjsSigner";
 import { convertToUnixTimestamp } from "@/utils/timeUtils";
 
@@ -36,6 +37,29 @@ export default function PlayQuiz() {
   const [selectedAnswer, setSelectedAnswer]  = useState("")
 
   const [currentQuestionNumber, setCurrentQuestionNumber] = useState(0)
+
+  const [startingBalance, setStartingBalance] = useState<bigint>(BigInt(0))
+  const [startingDate, setStartingDate] = useState(new Date())
+  const [flowRate, setFlowRate] = useState<bigint>(BigInt(0))
+
+
+  setInterval(async ()=>{
+    try {
+      const signer = await getDefaultEthersSigner()
+   
+       const quizyStreamContract = new ethers.Contract(QuezyStreamAddress, QuizyStreamABI, signer);
+  
+       const currentFlowRate = await quizyStreamContract.get_member_flow_rate(quizId, account.address)
+  
+       setFlowRate(currentFlowRate)
+  
+       console.log(currentFlowRate)
+    } catch (error) {
+      console.log(error)
+    }
+  }, 5000)
+
+
 
   useEffect(() => {
     if (!roomId) return;
@@ -124,6 +148,12 @@ export default function PlayQuiz() {
 
   return (
     <VStack spacing={4} align="center" justify="center" height="100vh">
+
+      <FlowingBalance
+      startingBalance={startingBalance}
+      startingBalanceDate={startingDate}
+      flowRate={flowRate}
+      ></FlowingBalance>
       {currentQuestion ? (
         <>
           <Text fontSize="3xl">{currentQuestion.question}</Text>
