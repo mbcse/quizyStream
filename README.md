@@ -13,6 +13,20 @@ This creates a dynamic experience for players . Anyone can use this app to creat
 - ApeCoin - We wrap ApeCoin ERC20 tokens into [ApeX](https://console.superfluid.finance/eth-sepolia/supertokens/0xC8e4F9AD94a36863f98298DAb7B07685CC5f831F) using superfluid and stream them real time to players.
 
 
+## To Run
+
+```bash
+cd frontend
+npm run dev
+```
+
+In another terminal in root
+
+```bash
+node ./server.js
+```
+
+
 ## Safety
 This is experimental software and is provided on an "as is" and "as available" basis.
 We do not give any warranties and will not be liable for any loss incurred through any use of this codebase.
