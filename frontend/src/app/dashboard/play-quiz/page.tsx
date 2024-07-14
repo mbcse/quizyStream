@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 
-import { Box, Button, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, Flex, Text, VStack } from "@chakra-ui/react";
 import { ethers } from "ethers";
 import { useSearchParams } from 'next/navigation';
 import { io } from "socket.io-client";
@@ -43,7 +43,7 @@ export default function PlayQuiz() {
   const [startingDate, setStartingDate] = useState(new Date())
   const [flowRate, setFlowRate] = useState<bigint>(BigInt(0))
 
-  const {notifySuccess} = useNotify()
+  const {notifySuccess, notifyError} = useNotify()
 
 
   setInterval(async ()=>{
@@ -56,10 +56,10 @@ export default function PlayQuiz() {
   
        setFlowRate(currentFlowRate)
 
-       if(flowRate <= currentFlowRate) {
+       if(Number(flowRate) < Number(currentFlowRate)) {
         notifySuccess({title: "Stream Updated", message: "Hurray! Stream went Up to " + currentFlowRate})
-       }else{
-        notifySuccess({title: "Stream Updated", message: "Oho! Stream went Down to " + currentFlowRate})
+       }else if(Number(flowRate) > Number(currentFlowRate)){
+        notifyError({title: "Stream Updated", message: "Oho! Stream went Down to " + currentFlowRate})
        }
 
        console.log(currentFlowRate)
@@ -156,43 +156,49 @@ export default function PlayQuiz() {
   };
 
   return (
-    <VStack spacing={4} align="center" justify="center" height="100vh">
 
-      <FlowingBalance
+    <>
+    <FlowingBalance
       startingBalance={startingBalance}
       startingBalanceDate={startingDate}
       flowRate={flowRate}
-      ></FlowingBalance>
-      {currentQuestion ? (
-        <>
-          <Text fontSize="3xl">{currentQuestion.question}</Text>
-          {currentQuestion.options.map((option, index) => (
-            <Button key={index} onClick={() => handleSelectOption(option, currentQuestion.question, currentQuestionNumber)}>
-            {option}
-          </Button>
-          ))}
-        </>
-      ) : (
-        <Text fontSize="3xl">
-          
-          {
-            quizInitialized ? (
+    />
 
-            connectToStream ? ("Wait or Quiz to Start"): (
-              <Button
-                onClick={()=>{
-                  handleConnectRewardStream()
-                }}
-              >
-                Connect Reward Stream
-              </Button>
-            )
-           ) :
-            ("Waiting for the quiz to start...")
-          }
-          
-          </Text>
-      )}
-    </VStack>
+    <VStack spacing={4} align="center" justify="center" height="100vh">
+    
+    {currentQuestion ? (
+      <>
+        <Text fontSize="3xl" textAlign="center" marginTop="20px">
+          {currentQuestion.question}
+        </Text>
+        <Flex wrap="wrap" justifyContent="center">
+          {currentQuestion.options.map((option, index) => (
+            <Button
+              key={index}
+              onClick={() => handleSelectOption(option, currentQuestion.question, index)}
+              margin="10px"
+            >
+              {option}
+            </Button>
+          ))}
+        </Flex>
+      </>
+    ) : (
+      <Text fontSize="3xl" textAlign="center">
+        {quizInitialized ? (
+          connectToStream ? (
+            "Wait for the Quiz to Start"
+          ) : (
+            <Button onClick={handleConnectRewardStream}>
+              Connect Reward Stream
+            </Button>
+          )
+        ) : (
+          "Waiting for the quiz to start..."
+        )}
+      </Text>
+    )}
+  </VStack>
+  </>
   );
 }

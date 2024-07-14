@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useMemo, memo } from 'react';
 
+import { Box, Image, Text } from '@chakra-ui/react';
 import { formatEther } from 'viem';
+
+import img from './apecoin.png'
 
 // Constants
 export const ANIMATION_MINIMUM_STEP_TIME = 40;
@@ -111,13 +114,34 @@ const FlowingBalance: React.FC<FlowingBalanceProps> = memo(({ startingBalance, s
   );
 
   return (
-    <div className="flowing-balance">
-      Streaming Reward &nbsp; {decimalPlaces !== undefined
-        ? toFixedUsingString(formatEther(flowingBalance), decimalPlaces)
-        : formatEther(flowingBalance)}
-
-        &nbsp;&nbsp;ApeCoin
-    </div>
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      backgroundColor="#f7f7f7"
+      padding="2px"
+      borderRadius="10px"
+      boxShadow="0 4px 8px rgba(0, 0, 0, 0.1)"
+      maxWidth="400px"
+      margin="auto"
+      textAlign="center"
+    >
+      <Text fontSize="2xl" fontWeight="bold" marginBottom="10px">
+        Current Apecoin Reward Stream
+      </Text>
+      <Text fontSize="3xl" fontWeight="bold" color="#2c3e50" display="flex" alignItems="center">
+        {decimalPlaces !== undefined
+          ? toFixedUsingString(formatEther(flowingBalance), decimalPlaces)
+          : formatEther(flowingBalance)}
+        &nbsp;&nbsp;
+        <Image style={
+            {
+                height: "40px"
+            }
+        }src={img.src} />
+      </Text>
+    </Box>
   );
 });
 
