@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     name: "Mohit",
     url: "",
   },
-  icons: "favicon.svg",
+  icons: "quizyStream.jpg",
   manifest: "site.webmanifest",
 };
 

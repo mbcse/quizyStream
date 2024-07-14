@@ -21,8 +21,14 @@ const Quiz3Landing: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [roomId, setRoomId] = useState("");
 
+  const [ verifiedByWorldId, setVerifiedByWorldId] = useState(true)
+
   const handleJoinQuiz = (id: string) => {
 
+    if(!verifiedByWorldId){
+      notifyError({title: "Failed to Join", message:"Please Prove you are human before entering playground"})
+      return 
+    }
     setIsLoading(true); // Set loading state before navigation
 
     
@@ -32,8 +38,7 @@ const Quiz3Landing: FC = () => {
   };
 
   const onSuccess = () => {
-   
-    router.push(`/dashboard/play-quiz?roomId=${roomId}`);
+   setVerifiedByWorldId(true)
 };
 
   const handleVerify = async (proof: ISuccessResult) => {
@@ -60,17 +65,17 @@ const Quiz3Landing: FC = () => {
     >
       <LoadingScreen isLoading={isLoading} />
       <IDKitWidget
-	app_id="your app id" // obtained from the Developer Portal
-	action="your action id" // obtained from the Developer Portal
+	app_id={process.env.NEXT_PUBLIC_APP_ID} // obtained from the Developer Portal
+	action={process.env.NEXT_PUBLIC_ACTION_ID} // obtained from the Developer Portal
 	onSuccess={onSuccess} // callback when the modal is closed
 	handleVerify={handleVerify} // callback when the proof is received
 	verification_level={VerificationLevel.Orb}
 >
-	{({ open }) => 
-        // This is the button that will open the IDKit modal
-        <button onClick={open}>Verify with World ID</button>
-    }
-</IDKitWidget>
+      {({ open }) => 
+            // This is the button that will open the IDKit modal
+            <button onClick={open}>Prove You are human with World Id</button>
+        }
+      </IDKitWidget>
 
       <VStack w={"45%"} minWidth={"270px"} gap={2} textAlign="left">
         <Text textAlign="left" fontWeight="bold">RoomId</Text>

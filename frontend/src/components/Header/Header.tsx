@@ -13,7 +13,7 @@ import { useAccount } from "wagmi";
 
 
 import logo from "../../../public/img/logo_transparent.png";
-import TokenTreat from "../../../public/img/TokenTreat.svg";
+import TokenTreat from "../../../public/img/quizyStream.jpg";
 import { DarkModeButton } from "../DarkModeButton";
 import { useWindowSize } from "@/hooks/useWindowSize";
 
@@ -42,7 +42,7 @@ const Header: FC = () => {
         {!isTablet && (
           <Link href={"/"}>
           <Heading as="h1" fontSize={"1.5rem"} className="text-shadow">
-            Quiz3
+            QuizyStream
           </Heading>
           </Link>
         )}
