@@ -1,7 +1,8 @@
 'use client' // for Next.js app router
 import { FC, useState } from "react";
-import { IDKitWidget, VerificationLevel, ISuccessResult } from '@worldcoin/idkit';
+
 import { Box, Button, Flex, Input, Text, VStack } from "@chakra-ui/react";
+import { IDKitWidget, VerificationLevel, ISuccessResult } from '@worldcoin/idkit';
 import { useRouter } from 'next/navigation';
 import { io } from 'socket.io-client';
 import { useAccount, useChainId } from "wagmi";
@@ -25,15 +26,14 @@ const Quiz3Landing: FC = () => {
     setIsLoading(true); // Set loading state before navigation
 
     
+    router.push(`/dashboard/play-quiz?roomId=${id}`);
 
     // Note: No need to set isLoading(false) here as navigation will cause component unmount
   };
 
-  
-
   const onSuccess = () => {
    
-    router.push(`/dashboard/play-quiz?roomId=${id}`);
+    router.push(`/dashboard/play-quiz?roomId=${roomId}`);
 };
 
   const handleVerify = async (proof: ISuccessResult) => {
@@ -81,7 +81,7 @@ const Quiz3Landing: FC = () => {
           placeholder="Room Id"
         />
         <Button
-          onClick={() => open()}
+          onClick={() => handleJoinQuiz(roomId)}
           isLoading={isLoading}
           colorScheme="teal"
           variant="solid"
